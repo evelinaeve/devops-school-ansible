@@ -1,0 +1,22 @@
+---
+- name: modify grub
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: add lines
+    lineinfile:
+     state: present
+     path: /etc/default/grub
+     backrefs: yes
+     regexp: '(GRUB_CMDLINE_LINUX="[^"]*)(")'
+     line: '\1 net.ifnames=0 biosdevname=0\2'
+
+  - name: grub installation
+    yum:
+     name: grub2
+     state: present
+
+  - name: save changes to file
+    command: grub2-mkconfig -o /boot/grub2/grub.cfg
+
