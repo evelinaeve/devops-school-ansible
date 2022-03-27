@@ -1,0 +1,24 @@
+---
+- name: Uninstall Apache
+  hosts: all
+  become: yes
+
+  vars:
+   destin_file: /var/www/html
+
+  tasks:
+  - name: uninstall Apache
+    yum:
+     name: httpd
+     state: absent
+
+  - name: remove html file and directory
+    file:
+     state: absent
+     path: "{{ destin_file }}"
+
+  - name: close firewall ports
+    firewalld:
+     service: http
+     state: disabled
+     permanent: true
