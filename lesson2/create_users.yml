@@ -1,0 +1,22 @@
+---
+ - name: create users
+   hosts: all
+   become: yes
+
+   vars:
+    vaulted_password: mysecret.txt
+
+
+   tasks:
+    - name: Create user
+      user:
+       name: "{{ item }}"
+       password: "{{ vaulted_password | password_hash('sha512') }}"
+       state: present
+       comment: "{{ item }}@example.com"
+       create_home: yes
+       update_password: on_create
+      with_items:
+       - "Alice"
+       - "Bob"
+       - "Carol"
